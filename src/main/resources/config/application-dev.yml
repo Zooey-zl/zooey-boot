@@ -4,7 +4,7 @@ spring:
   datasource:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://127.0.0.1:3306/zooey?characterEncoding=utf8&autoReconnect=true&useSSL=false
+      url: jdbc:mysql://127.0.0.1:3306/zooey_boot_db?characterEncoding=utf8&autoReconnect=true&useSSL=false
       username: root
       password: ULTRATEL
       #连接池配置

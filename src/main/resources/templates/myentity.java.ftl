@@ -31,7 +31,7 @@ package ${package.Entity};
     @TableName("${schemaName}${table.name}")
 </#if>
 <#if swagger>
-    @Schema(value = "${entity}对象", description = "${table.comment!}")
+    @Schema(name = "${entity}对象", description = "${table.comment!}")
 </#if>
 <#if superEntityClass??>
     public class ${entity} extends ${superEntityClass}<#if activeRecord><${entity}></#if> {
