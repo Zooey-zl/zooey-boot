@@ -1,0 +1,22 @@
+spring:
+  profiles:
+    active: dev
+
+
+
+#management:
+#  endpoint:
+#    health:
+#      show-details: always
+#  endpoints:
+#    jmx:
+#      exposure:
+#        include: '*'
+#    web:
+#      exposure:
+#        include: '*'
+#  server:
+#    port: 8081
+
+
+

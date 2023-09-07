@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration scan="false" debug="false">
+
+
+    <!-- 控制台日志格式 -->
+    <property name="CONSOLE_LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] [%-5level] %blue(%logger{50}:%line) %X{request_id} - %msg%n"/>
+
+    <!-- 控制台输出 -->
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <!--<appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        &lt;!&ndash;指定logstash ip：监听端口&ndash;&gt;
+        <destination>192.168.40.149:5601</destination>
+        <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder" />
+    </appender>-->
+
+    <appender name="ASYNC_STDOUT" class="ch.qos.logback.classic.AsyncAppender">
+        <discardingThreshold>0</discardingThreshold>
+        <queueSize>${DEFAULT_ASYNC_QUEUE_SIZE}</queueSize>
+        <includeCallerData>true</includeCallerData>
+        <appender-ref ref="STDOUT"/>
+    </appender>
+
+
+    <!-- 日志输出级别 -->
+    <root level="info">
+        <appender-ref ref="ASYNC_STDOUT"/>
+    </root>
+
+    <!-- 定制输出mybatis SQL -->
+    <logger name="com.cn.zooey.mapper" level="debug" additivity="false">
+        <appender-ref ref="ASYNC_STDOUT"/>
+    </logger>
+
+</configuration>
