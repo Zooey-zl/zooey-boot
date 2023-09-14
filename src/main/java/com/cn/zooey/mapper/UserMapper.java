@@ -2,6 +2,7 @@ package com.cn.zooey.mapper;
 
 import com.cn.zooey.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 
 /**
  * <p>
@@ -13,4 +14,10 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
  */
 public interface UserMapper extends BaseMapper<User> {
 
+    /**
+     * 根据手机号获取用户
+     * @param mobile
+     * @return
+     */
+    User getUserByMobile(@Param("mobile") String mobile);
 }

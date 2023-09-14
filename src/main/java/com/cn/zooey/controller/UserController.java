@@ -1,10 +1,8 @@
 package com.cn.zooey.controller;
 
-import cn.hutool.json.JSONUtil;
 import com.cn.zooey.common.base.result.ResResult;
 import com.cn.zooey.common.constraints.group.AddAction;
-import com.cn.zooey.convert.UserConvert;
-import com.cn.zooey.entity.User;
+import com.cn.zooey.common.constraints.group.UpdateAction;
 import com.cn.zooey.service.UserService;
 import com.cn.zooey.vo.UserVO;
 import io.swagger.v3.oas.annotations.Operation;
@@ -39,25 +37,25 @@ public class UserController {
     private final UserService userService;
 
 
-    //用户列表
+    // 用户列表
 
-    //查询用户
+    // 查询用户
 
     @Operation(summary = "新增用户")
     @PostMapping("/addUser")
     public ResResult<?> addUser(@Validated({Default.class, AddAction.class}) @RequestBody UserVO userVO) {
 
-        log.info("接收参数: {}", JSONUtil.toJsonStr(userVO));
-        User user = UserConvert.INSTANCE.toUser(userVO);
-        log.info("转换后参数: {}", JSONUtil.toJsonStr(user));
+        return userService.addUser(userVO);
 
-        userService.save(user);
-
-        return ResResult.ok();
     }
 
-    //修改用户
+    @Operation(summary = "修改用户")
+    @PostMapping("/updateUser")
+    public ResResult<?> updateUser(@Validated({Default.class, UpdateAction.class}) @RequestBody UserVO userVO) {
 
-    //删除用户
+        return userService.updateUser(userVO);
+    }
+
+    // 删除用户
 
 }
