@@ -2,10 +2,13 @@ package com.cn.zooey.vo;
 
 import com.cn.zooey.common.constraints.group.AddAction;
 import com.cn.zooey.common.constraints.group.UpdateAction;
+import com.cn.zooey.common.constraints.pattern.phone.Phone;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.constraints.*;
+import java.time.LocalDate;
 
 /**
  * @Author Fengzl
@@ -22,15 +25,25 @@ public class UserVO {
     private Long id;
 
     @NotBlank
-    @Schema(description = "姓名")
+    @Schema(description = "用户名")
     private String userName;
-    @NotNull
+
+    @Phone
+    @Schema(description = "手机号")
+    private String mobile;
+
     @Min(value = 1)
-    @Max(value = 200)
-    @Schema(description = "年龄")
-    private Integer age;
+    @Max(value = 2)
+    @Schema(description = "性别:0-不详,1-男,2-女")
+    private Integer gender;
+
+    @NotNull
+    @PastOrPresent
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Schema(description = "出生年月")
+    private LocalDate birthday;
+
     @Email
-    @NotBlank
     @Schema(description = "邮箱")
     private String email;
 }

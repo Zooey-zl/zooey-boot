@@ -7,7 +7,7 @@ package com.cn.zooey.common.generation;
  **/
 public class GenerationConsts {
 
-    protected static final String DATASOURCE_URL = "jdbc:mysql://127.0.0.1:3306/zooey";
+    protected static final String DATASOURCE_URL = "jdbc:mysql://127.0.0.1:3306/zooey_boot_db";
     protected static final String DATASOURCE_USERNAME = "root";
     protected static final String DATASOURCE_PASSWORD = "ULTRATEL";
 

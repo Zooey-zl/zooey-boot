@@ -46,10 +46,10 @@ public class SwaggerConfig {
     public OpenAPI customOpenAPI() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("Zooey模板API")
+                        .title("ZooeyAPI")
                         .version("1.0")
 
-                        .description( "Zooey模板接口文档")
+                        .description( "Zooey接口文档")
                         .termsOfService("http://doc.xiaominfo.com")
                         .license(new License().name("Apache 2.0")
                                 .url("http://doc.xiaominfo.com")));
