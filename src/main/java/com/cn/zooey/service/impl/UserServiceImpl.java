@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * <p>
@@ -66,6 +67,29 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         UserConvert.INSTANCE.updateUser(userVO, user);
         log.info("转换后参数: {}", JSONUtil.toJsonStr(user));
 
+        super.updateById(user);
+
+        return ResResult.ok();
+    }
+
+    @Override
+    public ResResult<?> removeUser(Long id) {
+        User user = super.getById(id);
+
+        Optional.ofNullable(user).filter(p -> !p.isDeleted()).orElseThrow(() -> new SaasException("用户不存在或不支持此操作"));
+
+        super.removeById(user);
+
+        return ResResult.ok();
+    }
+
+    @Override
+    public ResResult<?> endisableUser(Long id, Integer state) {
+        User user = super.getById(id);
+
+        Optional.ofNullable(user).filter(p -> !Objects.equals(p.getState(), state)).orElseThrow(() -> new SaasException("用户不存在或不支持此操作"));
+
+        user.setState(state);
         super.updateById(user);
 
         return ResResult.ok();

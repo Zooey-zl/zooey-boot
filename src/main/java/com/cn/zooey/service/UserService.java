@@ -36,4 +36,19 @@ public interface UserService extends IService<User> {
      * @return
      */
     ResResult<?> updateUser(UserVO userVO);
+
+    /**
+     * 删除用户
+     * @param id
+     * @return
+     */
+    ResResult<?> removeUser(Long id);
+
+    /**
+     * 禁用启用
+     * @param id
+     * @param state
+     * @return
+     */
+    ResResult<?> endisableUser(Long id, Integer state);
 }
