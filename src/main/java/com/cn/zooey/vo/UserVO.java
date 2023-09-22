@@ -2,6 +2,7 @@ package com.cn.zooey.vo;
 
 import com.cn.zooey.common.constraints.group.AddAction;
 import com.cn.zooey.common.constraints.group.UpdateAction;
+import com.cn.zooey.common.constraints.pattern.password.Password;
 import com.cn.zooey.common.constraints.pattern.phone.Phone;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -43,7 +44,19 @@ public class UserVO {
     @Schema(description = "出生年月")
     private LocalDate birthday;
 
+    @NotBlank(groups = AddAction.class)
+    @Password(groups = AddAction.class, message = "密码格式不正确")
+    @Schema(description = "密码")
+    private String password;
+
     @Email
     @Schema(description = "邮箱")
     private String email;
+
+    @Schema(description = "头像")
+    private String headUrl;
+
+    @NotBlank
+    @Schema(description = "地址")
+    private String address;
 }

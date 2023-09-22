@@ -42,9 +42,21 @@ public class User extends BaseEntity {
     @TableField("birthday")
     private LocalDate birthday;
 
+    @Schema(description = "密码")
+    @TableField("password")
+    private String password;
+
     @Schema(description = "邮箱")
     @TableField("email")
     private String email;
+
+    @Schema(description = "头像")
+    @TableField("head_url")
+    private String headUrl;
+
+    @Schema(description = "地址")
+    @TableField("address")
+    private String address;
 
     @Schema(description = "状态: 1-启用, 2-禁用")
     @TableField("state")

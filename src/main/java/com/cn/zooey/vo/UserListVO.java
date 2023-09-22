@@ -34,6 +34,12 @@ public class UserListVO {
     @Schema(description = "邮箱")
     private String email;
 
+    @Schema(description = "头像")
+    private String headUrl;
+
+    @Schema(description = "地址")
+    private String address;
+
     @Schema(description = "状态: 1-启用, 2-禁用")
     private Integer state;
 

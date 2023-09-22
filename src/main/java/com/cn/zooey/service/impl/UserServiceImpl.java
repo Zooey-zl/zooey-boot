@@ -1,13 +1,13 @@
 package com.cn.zooey.service.impl;
 
 import cn.hutool.json.JSONUtil;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cn.zooey.common.base.exception.SaasException;
 import com.cn.zooey.common.base.result.ResResult;
 import com.cn.zooey.convert.UserConvert;
 import com.cn.zooey.entity.User;
 import com.cn.zooey.mapper.UserMapper;
 import com.cn.zooey.service.UserService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cn.zooey.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -47,6 +47,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         User user = UserConvert.INSTANCE.toUser(userVO);
         log.info("转换后参数: {}", JSONUtil.toJsonStr(user));
+        // 密码加密 todo
 
         super.save(user);
 

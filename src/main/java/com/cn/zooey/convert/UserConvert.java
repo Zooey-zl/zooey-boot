@@ -8,7 +8,7 @@ import org.mapstruct.factory.Mappers;
 @Mapper
 public interface UserConvert {
 
-    UserConvert INSTANCE =  Mappers.getMapper(UserConvert.class);
+    UserConvert INSTANCE = Mappers.getMapper(UserConvert.class);
 
 
     @Mappings({
@@ -25,6 +25,7 @@ public interface UserConvert {
             @Mapping(target = "deleted", ignore = true),
             @Mapping(target = "createTime", ignore = true),
             @Mapping(target = "state", ignore = true),
+            @Mapping(target = "password", ignore = true)
     })
     void updateUser(UserVO userVO, @MappingTarget User user);
 }
