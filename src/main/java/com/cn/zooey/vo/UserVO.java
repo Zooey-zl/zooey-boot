@@ -45,7 +45,7 @@ public class UserVO {
     private LocalDate birthday;
 
     @NotBlank(groups = AddAction.class)
-    @Password(groups = AddAction.class, message = "密码格式不正确")
+    @Password(level = 1, groups = AddAction.class, message = "密码格式不正确")
     @Schema(description = "密码")
     private String password;
 

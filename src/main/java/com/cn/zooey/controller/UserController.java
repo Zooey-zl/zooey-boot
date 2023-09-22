@@ -1,5 +1,6 @@
 package com.cn.zooey.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.cn.zooey.common.base.result.ResResult;
 import com.cn.zooey.common.constraints.group.AddAction;
 import com.cn.zooey.common.constraints.group.UpdateAction;
@@ -49,6 +50,16 @@ public class UserController {
         return userService.addUser(userVO);
 
     }
+
+    @Operation(summary = "测试密码校验")
+    @PostMapping("/testPwd")
+    public ResResult<?> testPwd(@Validated({Default.class, AddAction.class}) @RequestBody UserVO userVO) {
+
+        log.info("参数: {}", JSONObject.toJSONString(userVO));
+        return ResResult.ok();
+
+    }
+
 
     @Operation(summary = "修改用户")
     @PostMapping("/updateUser")
