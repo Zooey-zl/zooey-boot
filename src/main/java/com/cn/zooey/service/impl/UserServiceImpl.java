@@ -1,6 +1,6 @@
 package com.cn.zooey.service.impl;
 
-import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cn.zooey.common.base.exception.SaasException;
 import com.cn.zooey.common.base.result.ResResult;
@@ -39,14 +39,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public ResResult<?> addUser(UserVO userVO) {
-        log.info("接收参数: {}", JSONUtil.toJsonStr(userVO));
+        log.info("接收参数: {}", JSONObject.toJSONString(userVO));
         User userByMobile = getUserByMobile(userVO.getMobile());
         if (Objects.nonNull(userByMobile)) {
             throw new SaasException("手机号已存在");
         }
 
         User user = UserConvert.INSTANCE.toUser(userVO);
-        log.info("转换后参数: {}", JSONUtil.toJsonStr(user));
+        log.info("转换后参数: {}", JSONObject.toJSONString(user));
         // 密码加密 todo
 
         super.save(user);
@@ -56,7 +56,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public ResResult<?> updateUser(UserVO userVO) {
-        log.info("接收参数: {}", JSONUtil.toJsonStr(userVO));
+        log.info("接收参数: {}", JSONObject.toJSONString(userVO));
         User user = super.getById(userVO.getId());
         if (Objects.isNull(user)) {
             throw new SaasException("用户不存在");
@@ -66,7 +66,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         UserConvert.INSTANCE.updateUser(userVO, user);
-        log.info("转换后参数: {}", JSONUtil.toJsonStr(user));
+        log.info("转换后参数: {}", JSONObject.toJSONString(user));
 
         super.updateById(user);
 

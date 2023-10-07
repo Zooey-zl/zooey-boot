@@ -1,6 +1,6 @@
 package com.cn.zooey.common.generation;
 
-import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
@@ -32,7 +32,7 @@ public class CodeGeneration {
         log.info("[CodeGeneration] - 代码自动生成, 开始 ... ");
         List<String> tables = new ArrayList<>();
         tables.add("t_user");
-        log.info("[CodeGeneration] - 全部表信息 -> {}", JSONUtil.toJsonStr(tables));
+        log.info("[CodeGeneration] - 全部表信息 -> {}", JSONObject.toJSONString(tables));
 
 
         /*数据库配置Builder*/

@@ -1,7 +1,7 @@
 package com.cn.zooey.filter;
 
 import cn.hutool.core.util.RandomUtil;
-import cn.hutool.json.JSONUtil;
+import com.alibaba.fastjson.JSONObject;
 import com.cn.zooey.common.util.IPUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
@@ -13,7 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.Map;
 
-import static com.cn.zooey.common.base.log.LogConstant.*;
+import static com.cn.zooey.common.base.log.LogConstant.REQUEST_ID;
+import static com.cn.zooey.common.base.log.LogConstant.REQUEST_ID_PREFIX;
 
 
 /**
@@ -38,7 +39,7 @@ public class RequestWrapperFilter implements Filter {
             String strParams;
             if (request.isEmpty()) {
                 Map<String, String[]> parameterMap = request.getParameterMap();
-                strParams = JSONUtil.toJsonStr(parameterMap);
+                strParams = JSONObject.toJSONString(parameterMap);
             } else {
                 strParams = request.getRequestParams();
             }
