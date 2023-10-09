@@ -1,8 +1,10 @@
 package com.cn.zooey.service;
 
 import com.cn.zooey.common.base.result.ResResult;
+import com.cn.zooey.dto.LoginUser;
 import com.cn.zooey.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.cn.zooey.vo.LoginVO;
 import com.cn.zooey.vo.UserVO;
 
 /**
@@ -51,4 +53,17 @@ public interface UserService extends IService<User> {
      * @return
      */
     ResResult<?> endisableUser(Long id, Integer state);
+
+    /**
+     * 账号密码登录
+     * @param loginVO
+     * @return
+     */
+    ResResult<LoginUser> login(LoginVO loginVO);
+
+    /**
+     * 退出登录
+     * @return
+     */
+    ResResult<?> logout();
 }
