@@ -9,7 +9,7 @@
 	<id>zooey-boot</id>
 
 	<classpath>
-		<dir name="E:/IdeaWorkBase/springboot/zooey-boot/target/classes">
+		<dir name="/Users/zooey/IdeaProjects/zooey-boot/target/classes">
 		</dir>
 	</classpath>
 
