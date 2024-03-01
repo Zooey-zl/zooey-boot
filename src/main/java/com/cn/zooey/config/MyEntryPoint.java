@@ -31,6 +31,7 @@ public class MyEntryPoint implements AuthenticationEntryPoint {
         ResResult<?> resResult = new ResResult<>();
         resResult.setCode(ResCode.UNAUTHORIZED.getCode());
         resResult.setMsg(ResCode.UNAUTHORIZED.getMsg());
+        resResult.setTimestamp(System.currentTimeMillis());
         // 直接提示前端认证错误
         out.write(JSONObject.toJSONString(resResult));
         out.flush();

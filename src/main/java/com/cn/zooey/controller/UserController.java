@@ -1,10 +1,12 @@
 package com.cn.zooey.controller;
 
-import com.alibaba.fastjson.JSONObject;
+import com.cn.zooey.common.base.result.ResPage;
 import com.cn.zooey.common.base.result.ResResult;
 import com.cn.zooey.common.constraints.group.AddAction;
 import com.cn.zooey.common.constraints.group.UpdateAction;
+import com.cn.zooey.entity.User;
 import com.cn.zooey.service.UserService;
+import com.cn.zooey.vo.UserListVO;
 import com.cn.zooey.vo.UserVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -39,27 +41,21 @@ public class UserController {
     private final UserService userService;
 
 
-    // 用户列表
+    @Operation(summary = "用户列表")
+    @PostMapping("/pageUserList")
+    public ResResult<ResPage<User>> pageUserList(@RequestBody UserListVO userListVO) {
 
-    // 查询用户
+        return userService.pageUserList(userListVO);
+    }
+
 
     @Operation(summary = "新增用户")
-    @PostMapping("/addUser")
+    @PutMapping("/addUser")
     public ResResult<?> addUser(@Validated({Default.class, AddAction.class}) @RequestBody UserVO userVO) {
 
         return userService.addUser(userVO);
 
     }
-
-    @Operation(summary = "测试密码校验")
-    @PostMapping("/testPwd")
-    public ResResult<?> testPwd(@Validated({Default.class, AddAction.class}) @RequestBody UserVO userVO) {
-
-        log.info("参数: {}", JSONObject.toJSONString(userVO));
-        return ResResult.ok();
-
-    }
-
 
     @Operation(summary = "修改用户")
     @PostMapping("/updateUser")

@@ -1,3 +1,74 @@
 server:
-  port: 9682
+  port: 9681
+spring:
+  datasource:
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://192.168.6.130:3306/zooey_boot_db?characterEncoding=utf8&autoReconnect=true&useSSL=false
+      username: root
+      password: root
+      #连接池配置
+      #初始化连接池的连接数量 大小，最小，最大
+      initial-size: 5
+      min-idle: 5
+      max-active: 30
+      #配置获取连接等待超时的时间
+      max-wait: 40000
+      #配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      time-between-eviction-runs-millis: 60000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      min-evictable-idle-time-millis: 30000
+      validation-query: SELECT 1
+      test-on-borrow: true
+      test-while-idle: true
+      test-on-return: false
+      # 是否缓存preparedStatement，也就是PSCache  官方建议MySQL下建议关闭   个人建议如果想用SQL防火墙 建议打开
+      pool-prepared-statements: false
+      max-pool-prepared-statement-per-connection-size: 20
+      filters: stat
+      # 通过connectProperties属性来打开mergeSql功能，慢SQL记录
+      connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=3000
+  # redis 配置
+  redis:
+    host: 192.168.6.130
+    port: 6379
+    password: 123456
 
+logging:
+  config: classpath:logback/logback-test.xml
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl
+
+
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'Zooey'
+      paths-to-match: '/**'
+      packages-to-scan: com.cn.zooey.controller
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+    swagger-model-name: 实体类列表
+    enable-version: true
+    enable-footer: false
+    enable-dynamic-parameter: true
+  basic:
+    enable: true
+    # Basic认证用户名
+    username: admin
+    # Basic认证密码
+    password: admin
+
+  documents:
+    - name: 自定义
+      locations: classpath:markdown/*
+      group: Zooey

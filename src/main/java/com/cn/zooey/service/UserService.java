@@ -1,10 +1,12 @@
 package com.cn.zooey.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import com.cn.zooey.common.base.result.ResPage;
 import com.cn.zooey.common.base.result.ResResult;
 import com.cn.zooey.dto.LoginUser;
 import com.cn.zooey.entity.User;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.cn.zooey.vo.LoginVO;
+import com.cn.zooey.vo.UserListVO;
 import com.cn.zooey.vo.UserVO;
 
 /**
@@ -18,6 +20,12 @@ import com.cn.zooey.vo.UserVO;
 public interface UserService extends IService<User> {
 
 
+    /**
+     * 用户列表
+     * @param userListVO
+     * @return
+     */
+    ResResult<ResPage<User>> pageUserList(UserListVO userListVO);
     /**
      * 根据手机号查询用户
      * @param mobile

@@ -3,11 +3,13 @@ package com.cn.zooey.common.util;
 
 import com.cn.zooey.common.base.util.Region;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.lionsoul.ip2region.xdb.Searcher;
-import org.springframework.util.ResourceUtils;
+import org.springframework.core.io.ClassPathResource;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.InputStream;
 import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -36,10 +38,14 @@ public class IPUtils {
 
     static {
         try {
-            URL url = ResourceUtils.getURL("classpath:ip/ip2region.xdb");
-            String dbPath = url.getPath();
+            // URL url = ResourceUtils.getURL("classpath:ip/ip2region.xdb");
+            // String dbPath = url.getPath();
+            //
+            // byte[] bytes = Searcher.loadContentFromFile(dbPath);
+            ClassPathResource resource = new ClassPathResource("ip/ip2region.xdb");
+            InputStream ism = resource.getInputStream();
+            byte[] bytes = IOUtils.toByteArray(ism);
 
-            byte[] bytes = Searcher.loadContentFromFile(dbPath);
             log.error("初始化ip2region , SEARCHER");
             SEARCHER = Searcher.newWithBuffer(bytes);
         } catch (Exception e) {

@@ -18,6 +18,7 @@ import java.util.Collection;
 @Data
 @NoArgsConstructor
 public class LoginUser implements UserDetails {
+    private static final long serialVersionUID = 3115830304799955531L;
 
     @Schema(description = "id")
     private Long id;

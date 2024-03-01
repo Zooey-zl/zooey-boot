@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cn.zooey.mapper.DepartmentMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.cn.zooey.entity.Department">
+        <result column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="deleted" property="deleted"/>
+        <result column="department_name" property="departmentName"/>
+        <result column="department_leader_uid" property="departmentLeaderUid"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="state" property="state"/>
+    </resultMap>
+
+
+    <!-- 树形结构映射结果 -->
+    <resultMap id="DptTreeResultMap" type="com.cn.zooey.dto.DepartmentTreeDTO">
+        <result column="id" property="id"/>
+        <result column="department_name" property="departmentName"/>
+        <result column="department_leader_uid" property="departmentLeaderUid"/>
+        <result column="parent_id" property="parentId"/>
+        <result column="state" property="state"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id
+        ,
+        create_time,
+        update_time,
+        deleted,
+        department_name, department_leader_uid, parent_id, state
+    </sql>
+
+    <!-- 树形结构查询结果列 -->
+    <sql id="Tree_Column_List">
+        id
+        ,department_name, department_leader_uid, parent_id, state
+    </sql>
+
+
+    <!--  查询全部部门  -->
+    <select id="getAllDepartment" resultMap="DptTreeResultMap">
+        select
+        <include refid="Tree_Column_List"/>
+        from t_department
+        where deleted = 0
+    </select>
+
+</mapper>

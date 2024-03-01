@@ -38,7 +38,6 @@ public class LoginController {
 
     }
 
-
     @Operation(summary = "登出")
     @PostMapping("/logout")
     public ResResult<?> logout() {

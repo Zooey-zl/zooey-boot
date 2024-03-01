@@ -86,7 +86,7 @@ public class RedisCacheConfig {
                 // 禁用第一层key
                 .disableKeyPrefix()
                 // 不允许存储null值
-                .disableCachingNullValues()
+                // .disableCachingNullValues()
                 // fastJson序列化方式
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new FastJsonRedisSerializer<>(Object.class)));
 

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static com.baomidou.mybatisplus.generator.config.TemplateType.*;
 import static com.cn.zooey.common.generation.GenerationConsts.*;
 
 
@@ -31,8 +32,14 @@ public class CodeGeneration {
     public static void main(String[] args) {
         log.info("[CodeGeneration] - 代码自动生成, 开始 ... ");
         List<String> tables = new ArrayList<>();
-        tables.add("t_user");
-        log.info("[CodeGeneration] - 全部表信息 -> {}", JSONObject.toJSONString(tables));
+        tables.add("t_department_role");
+        tables.add("t_role_btn");
+        tables.add("t_role_menu");
+        tables.add("t_user_department");
+        tables.add("t_user_role");
+        // ENTITY, SERVICE, SERVICE_IMPL, CONTROLLER, MAPPER, XML
+        boolean onlyEntity  = true;
+        log.info("[CodeGeneration] - 全部表信息 -> {}, 是否只生成实体 -> {}", JSONObject.toJSONString(tables), onlyEntity);
 
 
         /*数据库配置Builder*/
@@ -134,6 +141,12 @@ public class CodeGeneration {
                             //.enableHyphenStyle()开启驼峰转连字符，默认：false
                             .enableRestStyle()//开启生成@RestController
                             .formatFileName("%sController");//格式化文件名称
+                })
+                .templateConfig(builder -> {
+                    if (onlyEntity){
+                        // ENTITY, SERVICE, SERVICE_IMPL, CONTROLLER, MAPPER, XML
+                        builder.disable(SERVICE, SERVICE_IMPL, CONTROLLER);
+                    }
                 })
                 .execute();
 

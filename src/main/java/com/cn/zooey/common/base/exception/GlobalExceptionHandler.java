@@ -5,6 +5,7 @@ import com.cn.zooey.common.base.result.ResCode;
 import com.cn.zooey.common.base.result.ResResult;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
@@ -60,7 +61,31 @@ public class GlobalExceptionHandler {
         int code = ResCode.PARAM_ILLEGAL.getCode();
         String msg = ResCode.PARAM_ILLEGAL.getMsg();
 
-        // 异常处理
+        // 登录异常处理
+        if (e instanceof BadCredentialsException) {
+            log.error("[登录异常] --- message -> {}", e.getMessage());
+            return ResResult.error(e.getMessage());
+        }
+        // 参数异常处理
+        String res = handleVailException(e);
+        if (StringUtils.isNotEmpty(res)) {
+            log.warn("[参数校验异常] --- message -> {}", msg);
+            return ResResult.of(code, msg);
+        }
+        // 其他异常 归类系统异常
+        log.error("[系统异常] --- message -> {}", e.getMessage(), e);
+        return ResResult.of(ResCode.INTERNAL_SERVER_ERROR.getCode(), e.getMessage());
+    }
+
+
+    /**
+     * 参数异常处理
+     * @param e
+     * @return 如果匹配参数异常返回具体信息, 未匹配则返回 ""
+     */
+    private String handleVailException(Throwable e) {
+        String msg = "";
+        // 参数校验异常处理
         if (e instanceof MissingServletRequestParameterException) {
             msg = MessageFormat.format("缺少参数{0}", ((MissingServletRequestParameterException) e).getParameterName());
         } else if (e instanceof ConstraintViolationException) {
@@ -90,13 +115,8 @@ public class GlobalExceptionHandler {
             if (StringUtils.isNotBlank(bindMsg)) {
                 msg = bindMsg;
             }
-        } else {
-            log.error("[系统异常] --- message -> {}", e.getMessage(), e);
-            return ResResult.of(ResCode.INTERNAL_SERVER_ERROR.getCode(), e.getMessage());
         }
-        log.warn("[参数校验异常] --- message -> {}", msg);
-        // ILLEGAL
-        return ResResult.of(code, msg);
+        return msg;
     }
 
 
