@@ -1,26 +1,22 @@
 package com.cn.zooey.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cn.zooey.common.base.exception.SaasException;
-import com.cn.zooey.common.base.result.ResPage;
 import com.cn.zooey.common.base.result.ResResult;
 import com.cn.zooey.convert.DepartmentConvert;
-import com.cn.zooey.dto.DepartmentTreeDTO;
 import com.cn.zooey.entity.Department;
 import com.cn.zooey.mapper.DepartmentMapper;
 import com.cn.zooey.service.DepartmentService;
-import com.cn.zooey.vo.DepartmentListVO;
 import com.cn.zooey.vo.DepartmentVO;
-import org.apache.commons.lang3.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -31,6 +27,7 @@ import java.util.stream.Collectors;
  * @author Fengzl
  * @since 2023-10-17
  */
+@Slf4j
 @Service
 public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Department> implements DepartmentService {
 
@@ -39,29 +36,43 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
     private DepartmentMapper departmentMapper;
 
     @Override
-    public ResResult<ResPage<DepartmentTreeDTO>> pageDepartmentList(DepartmentListVO departmentListVO) {
+    public ResResult<List<Department>> pageDepartmentList() {
         // 查询全部
-        List<DepartmentTreeDTO> departments = departmentMapper.getAllDepartment();
-        // 如果有查询条件,过滤得到有关的部门
-        Set<Long> exitsDepartmentIds = new HashSet<>();
-        if (StringUtils.isNotBlank(departmentListVO.getDepartmentName())) {
-            List<DepartmentTreeDTO> exitsDepartments = departments.stream()
-                    .filter(p -> Objects.equals(p.getDepartmentName(), departmentListVO.getDepartmentName()))
-                    .collect(Collectors.toList());
-            exitsDepartmentIds = exitsDepartments.stream().map(DepartmentTreeDTO::getId).collect(Collectors.toSet());
-        }
+        List<Department> departments = departmentMapper.getAllDepartment();
+        // 查询最高父节点
+        List<Department> rootNode = selectRootNodeData(departments);
 
-        //递归生成部门树型结构数据
+        // 递归生成部门树型结构数据
+        rootNode.forEach(p -> p.setChildren(getChildren(departments, p.getId())));
+        log.info("部门树型列表: {}", JSONObject.toJSONString(rootNode));
 
-
-        return null;
+        return ResResult.ok(rootNode);
     }
 
 
+    /**
+     * 根据父节点ID递归填充子节点
+     * @param allNode
+     * @param parentId
+     * @return
+     */
+    private static List<Department> getChildren(List<Department> allNode, Long parentId) {
+        // 下一级子节点
+        List<Department> departments = allNode.stream().filter(item -> Objects.equals(item.getParentId(), parentId)).collect(Collectors.toList());
+        // 递归下一级
+        departments.forEach(p -> p.setChildren(getChildren(allNode, p.getId())));
 
-    private static void generateTreeData(List<DepartmentTreeDTO> res, List<DepartmentTreeDTO> departments, Long parentId, Set<Long> exitsDepartmentIds){
+        return departments;
+    }
 
+    /**
+     * 获取最高父节点
+     * @param allNode
+     * @return
+     */
+    private static List<Department> selectRootNodeData(List<Department> allNode) {
 
+        return allNode.stream().filter(item -> Objects.equals(item.getParentId(), 0L)).collect(Collectors.toList());
     }
 
     @Override

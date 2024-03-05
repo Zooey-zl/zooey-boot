@@ -65,7 +65,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public ResResult<ResPage<User>> pageUserList(UserListVO userListVO) {
-        LambdaQueryWrapper<User> queryWrapper = Wrappers.<User>lambdaQuery();
+        LambdaQueryWrapper<User> queryWrapper = Wrappers.lambdaQuery();
         if (StringUtils.isNotBlank(userListVO.getUserName())) {
             queryWrapper.like(User::getUserName, userListVO.getUserName());
         }

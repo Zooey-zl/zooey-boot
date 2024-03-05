@@ -1,11 +1,9 @@
 package com.cn.zooey.controller;
 
-import com.cn.zooey.common.base.result.ResPage;
 import com.cn.zooey.common.base.result.ResResult;
 import com.cn.zooey.common.constraints.group.UpdateAction;
-import com.cn.zooey.dto.DepartmentTreeDTO;
+import com.cn.zooey.entity.Department;
 import com.cn.zooey.service.DepartmentService;
-import com.cn.zooey.vo.DepartmentListVO;
 import com.cn.zooey.vo.DepartmentVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -14,6 +12,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.groups.Default;
+import java.util.List;
 
 import static com.cn.zooey.constant.GlobalConstant.API_PREFIX;
 
@@ -36,9 +35,9 @@ public class DepartmentController {
 
     @Operation(summary = "部门列表-树形")
     @PostMapping("/pageDepartmentList")
-    public ResResult<ResPage<DepartmentTreeDTO>> pageDepartmentList(@RequestBody DepartmentListVO departmentListVO) {
+    public ResResult<List<Department>> pageDepartmentList() {
 
-        return departmentService.pageDepartmentList(departmentListVO);
+        return departmentService.pageDepartmentList();
     }
 
     @Operation(summary = "新增部门")

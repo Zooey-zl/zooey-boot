@@ -2,7 +2,7 @@ package com.cn.zooey.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.cn.zooey.common.base.BaseEntity;
+import com.cn.zooey.common.base.TreeEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,7 +21,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @TableName("t_department")
 @Schema(name = "Department对象", description = "部门表")
-public class Department extends BaseEntity {
+public class Department extends TreeEntity {
 
     @Schema(description = "部门名称")
     @TableField("department_name")

@@ -1,8 +1,7 @@
 package com.cn.zooey.mapper;
 
-import com.cn.zooey.dto.DepartmentTreeDTO;
-import com.cn.zooey.entity.Department;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.cn.zooey.entity.Department;
 
 import java.util.List;
 
@@ -20,6 +19,7 @@ public interface DepartmentMapper extends BaseMapper<Department> {
      * 获取全部部门,排除删除
      * @return DepartmentTreeDTO
      */
-    List<DepartmentTreeDTO> getAllDepartment();
+    List<Department> getAllDepartment();
+
 
 }
