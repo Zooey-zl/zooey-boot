@@ -4,21 +4,37 @@
 
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.cn.zooey.entity.RoleMenu">
-        <result column="id" property="id" />
-        <result column="create_time" property="createTime" />
-        <result column="update_time" property="updateTime" />
-        <result column="deleted" property="deleted" />
-        <result column="role_id" property="roleId" />
-        <result column="menu_id" property="menuId" />
+        <result column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="deleted" property="deleted"/>
+        <result column="role_id" property="roleId"/>
+        <result column="menu_id" property="menuId"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id,
+        id
+        ,
         create_time,
         update_time,
         deleted,
         role_id, menu_id
     </sql>
+
+    <select id="getByRoleId" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select
+        <include refid="Base_Column_List"/>
+        from t_role_menu
+        where role_id = #{roleId}
+
+    </select>
+
+
+    <update id="recoverDeletedById" parameterType="java.lang.Long">
+        update t_role_menu
+        set deleted = false
+        where id = #{id}
+    </update>
 
 </mapper>

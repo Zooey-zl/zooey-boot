@@ -7,6 +7,7 @@ import com.cn.zooey.dto.LoginUser;
 import com.cn.zooey.entity.User;
 import com.cn.zooey.vo.LoginVO;
 import com.cn.zooey.vo.UserListVO;
+import com.cn.zooey.vo.UserRoleVO;
 import com.cn.zooey.vo.UserVO;
 
 /**
@@ -74,4 +75,11 @@ public interface UserService extends IService<User> {
      * @return
      */
     ResResult<?> logout();
+
+    /**
+     * 绑定角色,多选
+     * @param userRoleVO
+     * @return
+     */
+    ResResult<?> bindRole(UserRoleVO userRoleVO);
 }

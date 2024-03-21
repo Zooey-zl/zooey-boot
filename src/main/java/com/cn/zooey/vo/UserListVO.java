@@ -6,6 +6,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
 
 /**
@@ -22,7 +24,9 @@ public class UserListVO {
     @Schema(description = "手机号")
     private String mobile;
 
-    @Schema(description = "状态: 1-启用, 2-禁用")
+    @Min(value = 0)
+    @Max(value = 2)
+    @Schema(description = "状态: 1-启用, 2-禁用(不传或 0为全部)")
     private Integer state;
 
     @Schema(description = "开始时间")

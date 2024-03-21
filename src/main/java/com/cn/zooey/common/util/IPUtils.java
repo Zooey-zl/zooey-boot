@@ -46,7 +46,7 @@ public class IPUtils {
             InputStream ism = resource.getInputStream();
             byte[] bytes = IOUtils.toByteArray(ism);
 
-            log.error("初始化ip2region , SEARCHER");
+            log.info("初始化ip2region , SEARCHER");
             SEARCHER = Searcher.newWithBuffer(bytes);
         } catch (Exception e) {
             log.error("初始化ip2region.xdb文件失败,报错信息:[{}]", e.getMessage(), e);

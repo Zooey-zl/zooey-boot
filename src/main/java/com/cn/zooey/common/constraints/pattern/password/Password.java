@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  **/
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
-@Repeatable(Password.List.class)
+@Repeatable(Password.ValidList.class)
 @Documented
 @Constraint(validatedBy = {Password.Validator.class})
 public @interface Password {
@@ -48,7 +48,7 @@ public @interface Password {
     @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE})
     @Retention(RetentionPolicy.RUNTIME)
     @Documented
-    @interface List {
+    @interface ValidList {
         Password[] value();
     }
 

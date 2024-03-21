@@ -5,21 +5,24 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cn.zooey.cache.DataCache;
 import com.cn.zooey.common.base.exception.SaasException;
 import com.cn.zooey.common.base.result.ResPage;
 import com.cn.zooey.common.base.result.ResResult;
+import com.cn.zooey.common.util.PageUtil;
 import com.cn.zooey.constant.GlobalConstant;
 import com.cn.zooey.convert.UserConvert;
 import com.cn.zooey.dto.LoginUser;
 import com.cn.zooey.entity.User;
+import com.cn.zooey.entity.UserRole;
 import com.cn.zooey.mapper.UserMapper;
+import com.cn.zooey.mapper.UserRoleMapper;
 import com.cn.zooey.service.UserService;
 import com.cn.zooey.util.JWTUtil;
 import com.cn.zooey.vo.LoginVO;
 import com.cn.zooey.vo.UserListVO;
+import com.cn.zooey.vo.UserRoleVO;
 import com.cn.zooey.vo.UserVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -28,10 +31,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -47,6 +51,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Resource
     private UserMapper userMapper;
+    @Resource
+    private UserRoleMapper userRoleMapper;
     @Resource
     private AuthenticationManager authenticationManager;
 
@@ -82,7 +88,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             queryWrapper.eq(User::getState, userListVO.getState());
         }
 
-        IPage<User> iPage = Page.of(userListVO.getPageable().getPage(), userListVO.getPageable().getSize());
+        IPage<User> iPage = PageUtil.toIPage(userListVO.getPageable());
         IPage<User> userIPage = super.page(iPage, queryWrapper);
 
         return ResResult.ok(new ResPage<>(userIPage));
@@ -185,5 +191,53 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         SecurityContextHolder.clearContext();
         dataCache.removeLoginToken(GlobalConstant.GLOBAL_TOKEN_KEY, GlobalConstant.TOKEN_KEY_PREFIX + loginUser.getId());
         return ResResult.ok("退出成功");
+    }
+
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public ResResult<?> bindRole(UserRoleVO userRoleVO) {
+        User user = super.getById(userRoleVO.getUserId());
+        if (Objects.isNull(user)) {
+            throw new SaasException("用户不存在");
+        }
+        // 校验角色是否是用户类型
+
+        // 获取现有的角色
+        List<UserRole> userRoleList = userRoleMapper.getByUserId(userRoleVO.getUserId());
+        // 转成 map<roleId,UserRole>
+        Map<Long, UserRole> roleMap = userRoleList.stream().collect(Collectors.toMap(UserRole::getRoleId, o -> o));
+
+        // 对比新的角色,都有的不做修改,新的添加,原有的删除
+        List<Long> newRoleList = userRoleVO.getRoleIds();
+        // 待更新 Map
+        Map<Long, UserRole> newRoleMap = new HashMap<>();
+
+        for (Long roleId : newRoleList) {
+            // 存在并且删除状态为
+            if (roleMap.containsKey(roleId)) {
+                UserRole userRole = roleMap.get(roleId);
+                if (userRole.isDeleted()) {
+                    user.setDeleted(false);
+                    newRoleMap.put(roleId, userRole);
+                }
+                roleMap.remove(roleId);
+            } else {
+                UserRole userRole = new UserRole(userRoleVO.getUserId(), roleId);
+                newRoleMap.put(roleId, userRole);
+            }
+        }
+
+        // 更新 DB (加锁)
+        newRoleMap.values().forEach(p -> {
+            if (Objects.isNull(p.getId())) {
+                userRoleMapper.insert(p);
+            } else {
+                userRoleMapper.recoverDeletedById(p.getId());
+            }
+        });
+        roleMap.values().forEach(p -> userRoleMapper.deleteById(p));
+
+        return ResResult.ok();
+
     }
 }

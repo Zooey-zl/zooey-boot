@@ -69,6 +69,7 @@ public class GlobalExceptionHandler {
         // 参数异常处理
         String res = handleVailException(e);
         if (StringUtils.isNotEmpty(res)) {
+            msg = res;
             log.warn("[参数校验异常] --- message -> {}", msg);
             return ResResult.of(code, msg);
         }

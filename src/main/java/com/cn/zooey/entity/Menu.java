@@ -2,7 +2,7 @@ package com.cn.zooey.entity;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.cn.zooey.common.base.BaseEntity;
+import com.cn.zooey.common.base.TreeEntity;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -21,7 +21,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @TableName("t_menu")
 @Schema(name = "Menu对象", description = "菜单表")
-public class Menu extends BaseEntity {
+public class Menu extends TreeEntity {
 
     @Schema(description = "菜单名称")
     @TableField("name")
@@ -31,9 +31,6 @@ public class Menu extends BaseEntity {
     @TableField("path")
     private String path;
 
-    @Schema(description = "父菜单id")
-    @TableField("parent_id")
-    private Long parentId;
 
     @Schema(description = "图标")
     @TableField("icon")

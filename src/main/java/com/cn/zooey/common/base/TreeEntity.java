@@ -17,6 +17,11 @@ import java.util.List;
 @Data
 public class TreeEntity extends BaseEntity{
 
+
+    @Schema(description = "父id")
+    @TableField("parent_id")
+    private Long parentId;
+
     @Schema(description = "子菜单")
     @TableField(exist = false)
     private List<?> children = new ArrayList<>();

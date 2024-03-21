@@ -1,7 +1,7 @@
 package com.cn.zooey.mapper;
 
-import com.cn.zooey.entity.User;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.cn.zooey.entity.User;
 import org.apache.ibatis.annotations.Param;
 
 /**

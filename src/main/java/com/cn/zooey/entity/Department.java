@@ -31,10 +31,6 @@ public class Department extends TreeEntity {
     @TableField("department_leader_uid")
     private Long departmentLeaderUid;
 
-    @Schema(description = "父部门id")
-    @TableField("parent_id")
-    private Long parentId;
-
     @Schema(description = "状态,1-正常,2-禁用")
     @TableField("state")
     private Byte state;

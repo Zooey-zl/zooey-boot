@@ -7,6 +7,7 @@ import com.cn.zooey.common.constraints.group.UpdateAction;
 import com.cn.zooey.entity.User;
 import com.cn.zooey.service.UserService;
 import com.cn.zooey.vo.UserListVO;
+import com.cn.zooey.vo.UserRoleVO;
 import com.cn.zooey.vo.UserVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -76,6 +77,13 @@ public class UserController {
     public ResResult<?> endisableUser(@NotNull Long id, @Min(value = 1) @Max(value = 2) Integer state) {
 
         return userService.endisableUser(id, state);
+    }
+
+    @Operation(summary = "绑定角色")
+    @PostMapping("/bindRole")
+    public ResResult<?> bindRole(@Validated @RequestBody UserRoleVO userRoleVO) {
+
+        return userService.bindRole(userRoleVO);
     }
 
 }

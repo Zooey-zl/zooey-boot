@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  **/
 @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE})
 @Retention(RetentionPolicy.RUNTIME)
-@Repeatable(Phone.List.class)
+@Repeatable(Phone.ValidList.class)
 @Documented
 @Constraint(validatedBy = {Phone.Validator.class})
 public @interface Phone {
@@ -29,7 +29,7 @@ public @interface Phone {
     @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE})
     @Retention(RetentionPolicy.RUNTIME)
     @Documented
-    @interface List {
+    @interface ValidList {
         Phone[] value();
     }
 

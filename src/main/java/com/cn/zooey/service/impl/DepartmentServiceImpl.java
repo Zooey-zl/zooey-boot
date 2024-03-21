@@ -10,6 +10,7 @@ import com.cn.zooey.convert.DepartmentConvert;
 import com.cn.zooey.entity.Department;
 import com.cn.zooey.mapper.DepartmentMapper;
 import com.cn.zooey.service.DepartmentService;
+import com.cn.zooey.common.util.TreeUtil;
 import com.cn.zooey.vo.DepartmentVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -17,7 +18,6 @@ import org.springframework.stereotype.Service;
 import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -40,40 +40,15 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
         // 查询全部
         List<Department> departments = departmentMapper.getAllDepartment();
         // 查询最高父节点
-        List<Department> rootNode = selectRootNodeData(departments);
+        List<Department> rootNode = TreeUtil.selectRootNodeData(departments);
 
         // 递归生成部门树型结构数据
-        rootNode.forEach(p -> p.setChildren(getChildren(departments, p.getId())));
+        rootNode.forEach(p -> p.setChildren(TreeUtil.getChildren(departments, p.getId())));
         log.info("部门树型列表: {}", JSONObject.toJSONString(rootNode));
 
         return ResResult.ok(rootNode);
     }
 
-
-    /**
-     * 根据父节点ID递归填充子节点
-     * @param allNode
-     * @param parentId
-     * @return
-     */
-    private static List<Department> getChildren(List<Department> allNode, Long parentId) {
-        // 下一级子节点
-        List<Department> departments = allNode.stream().filter(item -> Objects.equals(item.getParentId(), parentId)).collect(Collectors.toList());
-        // 递归下一级
-        departments.forEach(p -> p.setChildren(getChildren(allNode, p.getId())));
-
-        return departments;
-    }
-
-    /**
-     * 获取最高父节点
-     * @param allNode
-     * @return
-     */
-    private static List<Department> selectRootNodeData(List<Department> allNode) {
-
-        return allNode.stream().filter(item -> Objects.equals(item.getParentId(), 0L)).collect(Collectors.toList());
-    }
 
     @Override
     public ResResult<?> addDepartment(DepartmentVO departmentVO) {
