@@ -114,7 +114,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
     @Override
     public ResResult<?> updateUser(UserVO userVO) {
-        log.info("接收参数: {}", JSONObject.toJSONString(userVO));
         User user = super.getById(userVO.getId());
         if (Objects.isNull(user)) {
             throw new SaasException("用户不存在");
@@ -124,7 +123,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         UserConvert.INSTANCE.updateUser(userVO, user);
-        log.info("转换后参数: {}", JSONObject.toJSONString(user));
 
         super.updateById(user);
 
