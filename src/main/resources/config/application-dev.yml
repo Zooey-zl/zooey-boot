@@ -4,8 +4,8 @@ spring:
   datasource:
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://172.16.156.130:3306/zooey_boot_db?characterEncoding=utf8&autoReconnect=true&useSSL=false
-      username: root
+      url: jdbc:mysql://192.168.64.5:3306/zooey_boot_db?characterEncoding=utf8&autoReconnect=true&useSSL=false
+      username: zooey
       password: root
       #连接池配置
       #初始化连接池的连接数量 大小，最小，最大
@@ -30,7 +30,7 @@ spring:
       connection-properties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=3000
   # redis 配置
   redis:
-    host: 172.16.156.130
+    host: 192.168.64.5
     port: 6379
     password: 123456
 
@@ -42,7 +42,7 @@ mybatis-plus:
 
 # es 配置
 elasticsearch:
-  ip: 172.16.156.130
+  ip: 192.168.64.5
   port: 9200
   username: elastic
   password: elastic
