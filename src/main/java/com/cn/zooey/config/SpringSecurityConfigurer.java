@@ -49,8 +49,8 @@ public class SpringSecurityConfigurer extends WebSecurityConfigurerAdapter {
                 // 进行认证请求的配置
                 .authorizeRequests()
                 // 对于登录接口, 允许匿名访问(走特定的拦截器)
-                .antMatchers(API_PREFIX + "/login/verifier").anonymous()
-                // 放行一下接口(不走拦截器)
+                .antMatchers(API_PREFIX + "/auth/login").anonymous()
+                // 放行以下接口(不走拦截器)
                 .antMatchers("/doc.html", "/favicon.ico", "/webjars/**", "/v3/api-docs/**").permitAll()
                 // 除了上面的请求以外所有的请求全部需要认证
                 .anyRequest().authenticated()

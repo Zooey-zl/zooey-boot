@@ -13,7 +13,9 @@ import com.cn.zooey.common.base.result.ResResult;
 import com.cn.zooey.common.util.PageUtil;
 import com.cn.zooey.constant.GlobalConstant;
 import com.cn.zooey.convert.UserConvert;
+import com.cn.zooey.dto.LoginToken;
 import com.cn.zooey.dto.LoginUser;
+import com.cn.zooey.dto.LoginUserInfo;
 import com.cn.zooey.entity.User;
 import com.cn.zooey.entity.UserRole;
 import com.cn.zooey.mapper.UserMapper;
@@ -24,6 +26,7 @@ import com.cn.zooey.vo.LoginVO;
 import com.cn.zooey.vo.UserListVO;
 import com.cn.zooey.vo.UserRoleVO;
 import com.cn.zooey.vo.UserVO;
+import io.jsonwebtoken.Claims;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -154,7 +157,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
 
     @Override
-    public ResResult<LoginUser> login(LoginVO loginVO) {
+    public ResResult<LoginToken> login(LoginVO loginVO) {
 
         // 创建Authentication对象
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginVO.getUserName(), loginVO.getPassword());
@@ -177,8 +180,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 登录日志 登录信息(使用浏览器,IP,所在地,时间,用户id), 存es,存库
         // 在线人数,统计有效token
 
+        LoginToken loginToken = new LoginToken();
+        loginToken.setToken(token);
+        loginToken.setRefreshToken(token);
 
-        return ResResult.ok(loginUser);
+        return ResResult.ok(loginToken);
     }
 
 
@@ -237,5 +243,23 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         return ResResult.ok();
 
+    }
+
+
+
+    @Override
+    public ResResult<LoginUserInfo> getUserInfo(String token) {
+        token = token.replace(GlobalConstant.TOKEN_HEADER_PREFIX, "");
+        Claims claims = JWTUtil.parse(token);
+        if (Objects.isNull(claims)) {
+            throw new SaasException("auth error");
+        }
+        String subject = claims.getSubject();
+        long userId = Long.parseLong(subject);
+        User user = this.getById(userId);
+        LoginUserInfo loginUserInfo = new LoginUserInfo();
+        loginUserInfo.setUserId(userId);
+        loginUserInfo.setUserName(user.getUserName());
+        return ResResult.ok(loginUserInfo);
     }
 }

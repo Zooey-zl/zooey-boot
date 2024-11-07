@@ -48,6 +48,7 @@ public class JwtAuthenticationTokenFilter extends OncePerRequestFilter {
         // 2、对token进行解析，取出其中的userId
         long userId;
         try {
+            token = token.replace(GlobalConstant.TOKEN_HEADER_PREFIX, "");
             // 校验JWT的token是否过期
             Claims claims = JWTUtil.parse(token);
             if (Objects.isNull(claims)) {

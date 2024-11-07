@@ -72,7 +72,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
 
         FilterRegistrationBean<CorsFilter> bean = new FilterRegistrationBean<>(corsFilter);
         // Filter拦截路径
-        bean.addUrlPatterns("/api/*");
+        bean.addUrlPatterns("/api/**");
         // 保证最先执行
         bean.setOrder(Ordered.LOWEST_PRECEDENCE);
 

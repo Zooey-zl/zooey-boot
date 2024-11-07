@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" ?>
+<!-- logback 有 5 种级别,分别是 TRACK < DEBUG < INFO < WARN < ERROR,定义于 ch.qos.logback.classic.Level类中 -->
+<!-- scan: 当此属性设置为 true 时,配置文件如果发生改变,将会被重新加载,默认值为 true -->
+<!-- scanPeriod: 设置检测配置文件是否有修改的时间间隔,如果没有给出时间单位,默认单位是毫秒,当 scan 设置为 true 时,此属性生效,默认的时间间隔是一分钟 -->
+<!-- debug: 当此属性设置为 true 时,将打印出 logback 内部日志信息,实时查看 logback 运行状态,默认值为 false -->
 <configuration scan="false" debug="false">
 
     <!-- 日志文件存储路径 -->

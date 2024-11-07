@@ -3,12 +3,16 @@ package com.cn.zooey.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.cn.zooey.common.base.result.ResPage;
 import com.cn.zooey.common.base.result.ResResult;
-import com.cn.zooey.dto.LoginUser;
+import com.cn.zooey.dto.LoginToken;
+import com.cn.zooey.dto.LoginUserInfo;
 import com.cn.zooey.entity.User;
 import com.cn.zooey.vo.LoginVO;
 import com.cn.zooey.vo.UserListVO;
 import com.cn.zooey.vo.UserRoleVO;
 import com.cn.zooey.vo.UserVO;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 
 /**
  * <p>
@@ -68,7 +72,7 @@ public interface UserService extends IService<User> {
      * @param loginVO
      * @return
      */
-    ResResult<LoginUser> login(LoginVO loginVO);
+    ResResult<LoginToken> login(LoginVO loginVO);
 
     /**
      * 退出登录
@@ -82,4 +86,10 @@ public interface UserService extends IService<User> {
      * @return
      */
     ResResult<?> bindRole(UserRoleVO userRoleVO);
+
+    /**
+     * 获取登录用户信息
+     * @return
+     */
+    ResResult<LoginUserInfo> getUserInfo(@Valid @NotBlank(message = "auth error") String token);
 }

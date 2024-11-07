@@ -18,7 +18,11 @@ public class GlobalConstant {
     /**
      * 传递 TOKEN 的 Header 名称
      */
-    public static final String TOKEN_HEADER = "zooey-token";
+    public static final String TOKEN_HEADER = "ZoeAuthorization";
+    /**
+     * 传递 TOKEN 的 Header 前缀
+     */
+    public static final String TOKEN_HEADER_PREFIX = "Bearer ";
 
     /**
      * 全局保存到redis的key
