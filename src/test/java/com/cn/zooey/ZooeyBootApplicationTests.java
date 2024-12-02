@@ -9,6 +9,7 @@ import co.elastic.clients.elasticsearch.core.UpdateResponse;
 import co.elastic.clients.elasticsearch.indices.CreateIndexResponse;
 import co.elastic.clients.elasticsearch.indices.GetIndexResponse;
 import co.elastic.clients.transport.endpoints.BooleanResponse;
+import com.alibaba.fastjson.JSONObject;
 import com.cn.zooey.entity.User;
 import com.cn.zooey.repository.UserRepository;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -195,5 +196,10 @@ class ZooeyBootApplicationTests {
         log.info("response == {}", response.hits().hits());
     }
 
+    @Test
+    void testQuerySql(){
+        User user = userRepository.getById(2);
+        log.info("user: {}", JSONObject.toJSONString(user));
+    }
 
 }

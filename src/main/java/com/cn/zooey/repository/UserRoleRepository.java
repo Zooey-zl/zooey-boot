@@ -3,6 +3,7 @@ package com.cn.zooey.repository;
 import com.baomidou.mybatisplus.extension.repository.CrudRepository;
 import com.cn.zooey.entity.UserRole;
 import com.cn.zooey.mapper.UserRoleMapper;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -11,6 +12,7 @@ import java.util.List;
  * @date 2024/12/2 11:13
  * @desc
  **/
+@Component
 public class UserRoleRepository extends CrudRepository<UserRoleMapper, UserRole> {
 
     /**
