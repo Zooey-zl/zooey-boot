@@ -3,14 +3,13 @@ package com.cn.zooey.service.impl;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cn.zooey.common.base.exception.SaasException;
 import com.cn.zooey.common.base.result.ResResult;
+import com.cn.zooey.common.util.TreeUtil;
 import com.cn.zooey.convert.DepartmentConvert;
 import com.cn.zooey.entity.Department;
-import com.cn.zooey.mapper.DepartmentMapper;
+import com.cn.zooey.repository.DepartmentRepository;
 import com.cn.zooey.service.DepartmentService;
-import com.cn.zooey.common.util.TreeUtil;
 import com.cn.zooey.vo.DepartmentVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -29,16 +28,16 @@ import java.util.Objects;
  */
 @Slf4j
 @Service
-public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Department> implements DepartmentService {
+public class DepartmentServiceImpl implements DepartmentService {
 
 
     @Resource
-    private DepartmentMapper departmentMapper;
+    private DepartmentRepository departmentRepository;
 
     @Override
     public ResResult<List<Department>> pageDepartmentList() {
         // 查询全部
-        List<Department> departments = departmentMapper.getAllDepartment();
+        List<Department> departments = departmentRepository.getAllDepartment();
         // 查询最高父节点
         List<Department> rootNode = TreeUtil.selectRootNodeData(departments);
 
@@ -57,7 +56,7 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
 
         Department department = DepartmentConvert.INSTANCE.toDepartment(departmentVO);
 
-        this.save(department);
+        departmentRepository.save(department);
 
         return ResResult.ok();
     }
@@ -65,7 +64,7 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
     @Override
     public ResResult<?> updateDepartment(DepartmentVO departmentVO) {
 
-        Department department = this.getById(departmentVO.getId());
+        Department department = departmentRepository.getById(departmentVO.getId());
         if (Objects.isNull(department)) {
             throw new SaasException("部门信息不存在或已删除");
         }
@@ -76,7 +75,7 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
 
         DepartmentConvert.INSTANCE.updateDepartment(departmentVO, department);
 
-        this.updateById(department);
+        departmentRepository.updateById(department);
 
         return ResResult.ok();
     }
@@ -92,7 +91,7 @@ public class DepartmentServiceImpl extends ServiceImpl<DepartmentMapper, Departm
         LambdaQueryWrapper<Department> queryWrapper = Wrappers.lambdaQuery();
         queryWrapper.eq(Department::getParentId, departmentVO.getParentId())
                 .eq(Department::getDepartmentName, departmentVO.getDepartmentName());
-        Department one = this.getOne(queryWrapper);
+        Department one = departmentRepository.getOne(queryWrapper);
         if (Objects.nonNull(one)) {
             throw new SaasException("同级别部门下名称不能重复");
         }

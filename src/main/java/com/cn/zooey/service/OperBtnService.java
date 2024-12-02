@@ -1,6 +1,5 @@
 package com.cn.zooey.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.cn.zooey.common.base.result.ResPage;
 import com.cn.zooey.common.base.result.ResResult;
 import com.cn.zooey.entity.OperBtn;
@@ -15,7 +14,7 @@ import com.cn.zooey.vo.OperBtnVO;
  * @author Fengzl
  * @since 2023-10-17
  */
-public interface OperBtnService extends IService<OperBtn> {
+public interface OperBtnService {
 
 
     /**

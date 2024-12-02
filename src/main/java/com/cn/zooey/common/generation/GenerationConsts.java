@@ -7,9 +7,9 @@ package com.cn.zooey.common.generation;
  **/
 public class GenerationConsts {
 
-    protected static final String DATASOURCE_URL = "jdbc:mysql://127.0.0.1:3306/zooey_boot_db";
-    protected static final String DATASOURCE_USERNAME = "root";
-    protected static final String DATASOURCE_PASSWORD = "ULTRATEL";
+    protected static final String DATASOURCE_URL = "jdbc:mysql://192.168.64.5:3306/zooey_boot_db";
+    protected static final String DATASOURCE_USERNAME = "zooey";
+    protected static final String DATASOURCE_PASSWORD = "root";
 
 
     protected static final String GLOBAL_AUTHOR = "Fengzl";
@@ -17,6 +17,7 @@ public class GenerationConsts {
 
     protected static final String PACKAGE_PARENT = "com.cn.zooey";
     protected static final String PACKAGE_ENTITY = "entity";
+    protected static final String PACKAGE_REPOSITORY = "repository";
     protected static final String PACKAGE_SERVICE = "service";
     protected static final String PACKAGE_SERVICE_IMPL = "service.impl";
     protected static final String PACKAGE_MAPPER = "mapper";

@@ -1,16 +1,16 @@
 package com.cn.zooey.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cn.zooey.common.base.exception.SaasException;
 import com.cn.zooey.common.base.result.ResResult;
+import com.cn.zooey.common.util.TreeUtil;
 import com.cn.zooey.convert.MenuConvert;
 import com.cn.zooey.entity.Menu;
-import com.cn.zooey.mapper.MenuMapper;
+import com.cn.zooey.repository.MenuRepository;
 import com.cn.zooey.service.MenuService;
-import com.cn.zooey.common.util.TreeUtil;
 import com.cn.zooey.vo.MenuVO;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -24,13 +24,15 @@ import java.util.Optional;
  * @since 2023-10-17
  */
 @Service
-public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements MenuService {
+public class MenuServiceImpl implements MenuService {
+    @Resource
+    private MenuRepository menuRepository;
 
     @Override
     public ResResult<List<Menu>> listMenu() {
 
         // 获取全部菜单, 排除删除
-        List<Menu> allNode = super.list();
+        List<Menu> allNode = menuRepository.list();
         // 获取根节点数据
         List<Menu> rootNode = TreeUtil.selectRootNodeData(allNode);
         // 递归生成树型结构
@@ -44,44 +46,44 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements Me
 
         Menu menu = MenuConvert.INSTANCE.toMenu(menuVO);
 
-        super.save(menu);
+        menuRepository.save(menu);
 
         return ResResult.ok();
     }
 
     @Override
     public ResResult<?> updateMenu(MenuVO menuVO) {
-        Menu menu = super.getById(menuVO.getId());
+        Menu menu = menuRepository.getById(menuVO.getId());
         if (Objects.isNull(menu)) {
             throw new SaasException("菜单不存在");
         }
 
         MenuConvert.INSTANCE.updateMenu(menuVO, menu);
 
-        super.updateById(menu);
+        menuRepository.updateById(menu);
 
         return ResResult.ok();
     }
 
     @Override
     public ResResult<?> removeMenu(Long id) {
-        Menu menu = super.getById(id);
+        Menu menu = menuRepository.getById(id);
 
         Optional.ofNullable(menu).filter(p -> !p.isDeleted()).orElseThrow(() -> new SaasException("菜单不存在或不支持此操作"));
 
-        super.removeById(menu);
+        menuRepository.removeById(menu);
 
         return ResResult.ok();
     }
 
     @Override
     public ResResult<?> endisableMenu(Long id, Byte state) {
-        Menu menu = super.getById(id);
+        Menu menu = menuRepository.getById(id);
 
         Optional.ofNullable(menu).filter(p -> !Objects.equals(p.getState(), state)).orElseThrow(() -> new SaasException("菜单不存在或不支持此操作"));
 
         menu.setState(state);
-        super.updateById(menu);
+        menuRepository.updateById(menu);
 
         return ResResult.ok();
     }

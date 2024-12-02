@@ -8,17 +8,13 @@ import com.baomidou.mybatisplus.generator.config.DataSourceConfig;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.config.rules.DateType;
 import com.baomidou.mybatisplus.generator.config.rules.NamingStrategy;
-import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
 import com.baomidou.mybatisplus.generator.fill.Column;
 import com.baomidou.mybatisplus.generator.fill.Property;
 import com.cn.zooey.common.base.BaseEntity;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
-import static com.baomidou.mybatisplus.generator.config.TemplateType.*;
 import static com.cn.zooey.common.generation.GenerationConsts.*;
 
 
@@ -32,20 +28,16 @@ public class CodeGeneration {
     public static void main(String[] args) {
         log.info("[CodeGeneration] - 代码自动生成, 开始 ... ");
         List<String> tables = new ArrayList<>();
-        tables.add("t_department_role");
-        tables.add("t_role_btn");
-        tables.add("t_role_menu");
-        tables.add("t_user_department");
-        tables.add("t_user_role");
-        // ENTITY, SERVICE, SERVICE_IMPL, CONTROLLER, MAPPER, XML
-        boolean onlyEntity  = true;
+        tables.add("t_admin");
+        // ENTITY, SERVICE, SERVICE_IMPL, CONTROLLER, REPOSITORY, MAPPER, XML
+        boolean onlyEntity = false;
         log.info("[CodeGeneration] - 全部表信息 -> {}, 是否只生成实体 -> {}", JSONObject.toJSONString(tables), onlyEntity);
 
 
         /*数据库配置Builder*/
         DataSourceConfig.Builder dataSourceConfigbuilder =
                 new DataSourceConfig.Builder(DATASOURCE_URL, DATASOURCE_USERNAME, DATASOURCE_PASSWORD);
-        /*项目路径 io.github.fzl.zooey*/
+        /*项目路径*/
         String projectPath = System.getProperty("user.dir");
         String filePath = projectPath + "/src/main/java";
 
@@ -79,15 +71,10 @@ public class CodeGeneration {
                         // Controller 包名
                         .controller(PACKAGE_CONTROLLER)
                         // 路径配置信息
-                        .pathInfo(Collections.singletonMap(OutputFile.xml, projectPath + "/src/main/resources/mapper")) //路径配置信息,就是配置各个文件模板的路径信息,这里以mapper.xml为例
+                        .pathInfo(Collections.singletonMap(OutputFile.xml, projectPath + "/src/main/resources/mapper")) // 路径配置信息,就是配置各个文件模板的路径信息,这里以mapper.xml为例
                         .build())
                 // 配置模板引擎 freemarker
-                .templateEngine(new FreemarkerTemplateEngine())
-                // 模板配置(TemplateConfig)
-                .templateConfig(builder -> {
-                    // 实体类使用我们自定义模板
-                    builder.entity("templates/myentity.java");
-                })
+                .templateEngine(new EnhanceFreemarkerTemplateEngine())
                 // 策略配置(StrategyConfig)
                 .strategyConfig(builder -> {
                     // 增加表匹配(内存过滤)
@@ -96,6 +83,9 @@ public class CodeGeneration {
                             .addTablePrefix("t_")
                             // 实体策略配置
                             .entityBuilder()
+                            // 实体类使用我们自定义模板
+                            .javaTemplate("templates/myentity.java")
+                            .enableFileOverride()
                             // 开启链式模型
                             .enableChainModel()
                             // 设置父类
@@ -123,32 +113,52 @@ public class CodeGeneration {
                             .formatFileName("%s")
                             .build()
                             // mapper 策略配置
-                            .mapperBuilder()//mapper文件策略
+                            .mapperBuilder()// mapper文件策略
                             //.enableMapperAnnotation()//开启mapper注解
-                            .enableBaseResultMap()//启用xml文件中的BaseResultMap 生成
-                            .enableBaseColumnList()//启用xml文件中的BaseColumnList
+                            .enableBaseResultMap()// 启用xml文件中的BaseResultMap 生成
+                            .enableBaseColumnList()// 启用xml文件中的BaseColumnList
                             //.cache(缓存类.class)设置缓存实现类
-                            .formatMapperFileName("%sMapper")//格式化Dao类名称
-                            .formatXmlFileName("%sMapper")//格式化xml文件名称
-                            .build()
-                            // service 策略配置
-                            .serviceBuilder()//service文件策略
-                            .formatServiceFileName("%sService")//格式化 service 接口文件名称
-                            .formatServiceImplFileName("%sServiceImpl")//格式化 service 接口文件名称
-                            .build()
-                            // controller 策略配置
-                            .controllerBuilder()//控制层策略
-                            //.enableHyphenStyle()开启驼峰转连字符，默认：false
-                            .enableRestStyle()//开启生成@RestController
-                            .formatFileName("%sController");//格式化文件名称
-                })
-                .templateConfig(builder -> {
-                    if (onlyEntity){
-                        // ENTITY, SERVICE, SERVICE_IMPL, CONTROLLER, MAPPER, XML
-                        builder.disable(SERVICE, SERVICE_IMPL, CONTROLLER);
+                            .formatMapperFileName("%sMapper")// 格式化Dao类名称
+                            .formatXmlFileName("%sMapper")// 格式化xml文件名称
+                            .build();
+                    if (!onlyEntity) {
+                        // service 策略配置
+                        builder.serviceBuilder()// service文件策略
+                                .formatServiceFileName("%sService")// 格式化 service 接口文件名称
+                                .formatServiceImplFileName("%sServiceImpl")// 格式化 service 接口文件名称
+                                .build()
+                                // controller 策略配置
+                                .controllerBuilder()// 控制层策略
+                                //.enableHyphenStyle()开启驼峰转连字符，默认：false
+                                .enableRestStyle()// 开启生成@RestController
+                                .formatFileName("%sController")
+                                .build();// 格式化文件名称
+                    }else {
+                        // service 策略配置
+                        builder.serviceBuilder()// service文件策略
+                                .formatServiceFileName("%sService")// 格式化 service 接口文件名称
+                                .formatServiceImplFileName("%sServiceImpl")// 格式化 service 接口文件名称
+                                .disableService()
+                                .disableServiceImpl()
+                                .build()
+                                // controller 策略配置
+                                .controllerBuilder()// 控制层策略
+                                //.enableHyphenStyle()开启驼峰转连字符，默认：false
+                                .enableRestStyle()// 开启生成@RestController
+                                .formatFileName("%sController")
+                                .disable()
+                                .build();// 格式化文件名称
                     }
+
+                })
+                .injectionConfig(consumer -> {
+                    Map<String, String> customFile = new HashMap<>();
+                    // DTO
+                    customFile.put("Repository.java", "/templates/myrepository.java.ftl");
+                    consumer.customFile(customFile);
                 })
                 .execute();
 
     }
+
 }

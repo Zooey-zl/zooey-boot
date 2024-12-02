@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.cn.zooey.common.base.exception.SaasException;
 import com.cn.zooey.dto.LoginUser;
 import com.cn.zooey.entity.User;
-import com.cn.zooey.mapper.UserMapper;
+import com.cn.zooey.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -25,7 +25,7 @@ import java.util.Objects;
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Resource
-    private UserMapper userMapper;
+    private UserRepository userRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -33,7 +33,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         log.info("[验证用户是否有权登录] -> {}", username);
         LambdaQueryWrapper<User> queryWrapper = Wrappers.<User>lambdaQuery().eq(User::getUserName, username).eq(User::getState, 1);
 
-        User user = userMapper.selectOne(queryWrapper);
+        User user = userRepository.getOne(queryWrapper);
 
         if (Objects.isNull(user)) {
             throw new SaasException("用户不存在");

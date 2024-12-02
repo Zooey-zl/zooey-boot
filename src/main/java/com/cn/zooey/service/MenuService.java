@@ -2,7 +2,6 @@ package com.cn.zooey.service;
 
 import com.cn.zooey.common.base.result.ResResult;
 import com.cn.zooey.entity.Menu;
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.cn.zooey.vo.MenuVO;
 
 import java.util.List;
@@ -15,7 +14,7 @@ import java.util.List;
  * @author Fengzl
  * @since 2023-10-17
  */
-public interface MenuService extends IService<Menu> {
+public interface MenuService {
 
     /**
      * 菜单列表-树型结构

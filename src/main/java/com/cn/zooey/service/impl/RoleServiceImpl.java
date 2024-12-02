@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cn.zooey.common.base.exception.SaasException;
 import com.cn.zooey.common.base.result.ResPage;
 import com.cn.zooey.common.base.result.ResResult;
@@ -12,8 +11,8 @@ import com.cn.zooey.common.util.PageUtil;
 import com.cn.zooey.convert.RoleConvert;
 import com.cn.zooey.entity.Role;
 import com.cn.zooey.entity.RoleMenu;
-import com.cn.zooey.mapper.RoleMapper;
-import com.cn.zooey.mapper.RoleMenuMapper;
+import com.cn.zooey.repository.RoleMenuRepository;
+import com.cn.zooey.repository.RoleRepository;
 import com.cn.zooey.service.RoleService;
 import com.cn.zooey.vo.RoleListVO;
 import com.cn.zooey.vo.RoleMenuVO;
@@ -37,10 +36,12 @@ import java.util.stream.Collectors;
  * @since 2023-10-17
  */
 @Service
-public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements RoleService {
+public class RoleServiceImpl implements RoleService {
 
     @Resource
-    private RoleMenuMapper roleMenuMapper;
+    private RoleRepository roleRepository;
+    @Resource
+    private RoleMenuRepository roleMenuRepository;
 
     @Override
     public ResResult<ResPage<Role>> pageRoleList(RoleListVO roleListVO) {
@@ -54,7 +55,7 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
         }
 
         IPage<Role> iPage = PageUtil.toIPage(roleListVO.getPageable());
-        IPage<Role> roleIPage = super.page(iPage, queryWrapper);
+        IPage<Role> roleIPage = roleRepository.page(iPage, queryWrapper);
 
         return ResResult.ok(new ResPage<>(roleIPage));
     }
@@ -63,21 +64,21 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     public ResResult<?> addRole(RoleVO roleVO) {
         Role role = RoleConvert.INSTANCE.toRole(roleVO);
 
-        super.save(role);
+        roleRepository.save(role);
 
         return ResResult.ok();
     }
 
     @Override
     public ResResult<?> updateRole(RoleVO roleVO) {
-        Role role = super.getById(roleVO.getId());
+        Role role = roleRepository.getById(roleVO.getId());
         if (Objects.isNull(role)) {
             throw new SaasException("角色不存在");
         }
 
         RoleConvert.INSTANCE.updateRole(roleVO, role);
 
-        super.updateById(role);
+        roleRepository.updateById(role);
 
         return ResResult.ok();
     }
@@ -90,12 +91,12 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ResResult<?> bindMenu(RoleMenuVO roleMenuVO) {
-        Role role = super.getById(roleMenuVO.getRoleId());
+        Role role = roleRepository.getById(roleMenuVO.getRoleId());
         if (Objects.isNull(role)) {
             throw new SaasException("角色不存在");
         }
         // 获取角色现有的菜单
-        List<RoleMenu> roleMenuList = roleMenuMapper.getByRoleId(roleMenuVO.getRoleId());
+        List<RoleMenu> roleMenuList = roleMenuRepository.getByRoleId(roleMenuVO.getRoleId());
         // 转成 map<menuId,RoleMenu>
         Map<Long, RoleMenu> menuMap = roleMenuList.stream().collect(Collectors.toMap(RoleMenu::getMenuId, o -> o));
 
@@ -122,12 +123,12 @@ public class RoleServiceImpl extends ServiceImpl<RoleMapper, Role> implements Ro
         // 更新 DB (加锁)
         newMenuMap.values().forEach(p -> {
             if (Objects.isNull(p.getId())) {
-                roleMenuMapper.insert(p);
+                roleMenuRepository.save(p);
             } else {
-                roleMenuMapper.recoverDeletedById(p.getId());
+                roleMenuRepository.recoverDeletedById(p.getId());
             }
         });
-        menuMap.values().forEach(p -> roleMenuMapper.deleteById(p.getId()));
+        menuMap.values().forEach(p -> roleMenuRepository.removeById(p.getId()));
 
         return ResResult.ok();
     }

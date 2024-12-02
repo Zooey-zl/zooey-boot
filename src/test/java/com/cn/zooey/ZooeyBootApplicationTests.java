@@ -10,7 +10,7 @@ import co.elastic.clients.elasticsearch.indices.CreateIndexResponse;
 import co.elastic.clients.elasticsearch.indices.GetIndexResponse;
 import co.elastic.clients.transport.endpoints.BooleanResponse;
 import com.cn.zooey.entity.User;
-import com.cn.zooey.service.UserService;
+import com.cn.zooey.repository.UserRepository;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -92,7 +92,7 @@ class ZooeyBootApplicationTests {
     }
 
     @Resource
-    private UserService userService;
+    private UserRepository userRepository;
 
     /**
      * 创建文档
@@ -100,7 +100,7 @@ class ZooeyBootApplicationTests {
      */
     @Test
     void testCreateDoc() throws IOException {
-        User user = userService.getById(1);
+        User user = userRepository.getById(1);
         IndexResponse response = esClient.index(c -> c
                 .index("ik_test")
                 .id(user.getId().toString())
@@ -115,7 +115,7 @@ class ZooeyBootApplicationTests {
      */
     @Test
     void testUpdateDoc() throws IOException {
-        User user = userService.getById(2);
+        User user = userRepository.getById(2);
         UpdateResponse<User> response = esClient.update(u -> u
                         .index("user")
                         .id("1")

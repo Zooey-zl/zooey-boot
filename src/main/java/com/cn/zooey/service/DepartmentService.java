@@ -1,6 +1,5 @@
 package com.cn.zooey.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.cn.zooey.common.base.result.ResResult;
 import com.cn.zooey.entity.Department;
 import com.cn.zooey.vo.DepartmentVO;
@@ -15,7 +14,7 @@ import java.util.List;
  * @author Fengzl
  * @since 2023-10-17
  */
-public interface DepartmentService extends IService<Department> {
+public interface DepartmentService {
 
 
     /**

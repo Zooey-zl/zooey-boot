@@ -1,6 +1,5 @@
 package com.cn.zooey.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
 import com.cn.zooey.common.base.result.ResPage;
 import com.cn.zooey.common.base.result.ResResult;
 import com.cn.zooey.dto.LoginToken;
@@ -22,7 +21,7 @@ import javax.validation.constraints.NotBlank;
  * @author Fengzl
  * @since 2023-09-07
  */
-public interface UserService extends IService<User> {
+public interface UserService {
 
 
     /**

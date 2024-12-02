@@ -5,7 +5,6 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.cn.zooey.cache.DataCache;
 import com.cn.zooey.common.base.exception.SaasException;
 import com.cn.zooey.common.base.result.ResPage;
@@ -18,8 +17,8 @@ import com.cn.zooey.dto.LoginUser;
 import com.cn.zooey.dto.LoginUserInfo;
 import com.cn.zooey.entity.User;
 import com.cn.zooey.entity.UserRole;
-import com.cn.zooey.mapper.UserMapper;
-import com.cn.zooey.mapper.UserRoleMapper;
+import com.cn.zooey.repository.UserRepository;
+import com.cn.zooey.repository.UserRoleRepository;
 import com.cn.zooey.service.UserService;
 import com.cn.zooey.util.JWTUtil;
 import com.cn.zooey.vo.LoginVO;
@@ -50,12 +49,12 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
-public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
+public class UserServiceImpl implements UserService {
 
     @Resource
-    private UserMapper userMapper;
+    private UserRepository userRepository;
     @Resource
-    private UserRoleMapper userRoleMapper;
+    private UserRoleRepository userRoleRepository;
     @Resource
     private AuthenticationManager authenticationManager;
 
@@ -68,7 +67,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public User getUserByMobile(String mobile) {
 
-        return userMapper.getUserByMobile(mobile);
+        return userRepository.getUserByMobile(mobile);
     }
 
 
@@ -92,7 +91,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         IPage<User> iPage = PageUtil.toIPage(userListVO.getPageable());
-        IPage<User> userIPage = super.page(iPage, queryWrapper);
+        IPage<User> userIPage = userRepository.page(iPage, queryWrapper);
 
         return ResResult.ok(new ResPage<>(userIPage));
     }
@@ -110,14 +109,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 密码加密
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        super.save(user);
+        userRepository.save(user);
 
         return ResResult.ok();
     }
 
     @Override
     public ResResult<?> updateUser(UserVO userVO) {
-        User user = super.getById(userVO.getId());
+        User user = userRepository.getById(userVO.getId());
         if (Objects.isNull(user)) {
             throw new SaasException("用户不存在");
         }
@@ -127,30 +126,30 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
 
         UserConvert.INSTANCE.updateUser(userVO, user);
 
-        super.updateById(user);
+        userRepository.updateById(user);
 
         return ResResult.ok();
     }
 
     @Override
     public ResResult<?> removeUser(Long id) {
-        User user = super.getById(id);
+        User user = userRepository.getById(id);
 
         Optional.ofNullable(user).filter(p -> !p.isDeleted()).orElseThrow(() -> new SaasException("用户不存在或不支持此操作"));
 
-        super.removeById(user);
+        userRepository.removeById(user);
 
         return ResResult.ok();
     }
 
     @Override
     public ResResult<?> endisableUser(Long id, Integer state) {
-        User user = super.getById(id);
+        User user = userRepository.getById(id);
 
         Optional.ofNullable(user).filter(p -> !Objects.equals(p.getState(), state)).orElseThrow(() -> new SaasException("用户不存在或不支持此操作"));
 
         user.setState(state);
-        super.updateById(user);
+        userRepository.updateById(user);
 
         return ResResult.ok();
     }
@@ -200,14 +199,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     @Transactional(rollbackFor = Exception.class)
     public ResResult<?> bindRole(UserRoleVO userRoleVO) {
-        User user = super.getById(userRoleVO.getUserId());
+        User user = userRepository.getById(userRoleVO.getUserId());
         if (Objects.isNull(user)) {
             throw new SaasException("用户不存在");
         }
         // 校验角色是否是用户类型
 
         // 获取现有的角色
-        List<UserRole> userRoleList = userRoleMapper.getByUserId(userRoleVO.getUserId());
+        List<UserRole> userRoleList = userRoleRepository.getByUserId(userRoleVO.getUserId());
         // 转成 map<roleId,UserRole>
         Map<Long, UserRole> roleMap = userRoleList.stream().collect(Collectors.toMap(UserRole::getRoleId, o -> o));
 
@@ -234,12 +233,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 更新 DB (加锁)
         newRoleMap.values().forEach(p -> {
             if (Objects.isNull(p.getId())) {
-                userRoleMapper.insert(p);
+                userRoleRepository.save(p);
             } else {
-                userRoleMapper.recoverDeletedById(p.getId());
+                userRoleRepository.recoverDeletedById(p.getId());
             }
         });
-        roleMap.values().forEach(p -> userRoleMapper.deleteById(p));
+        roleMap.values().forEach(p -> userRoleRepository.removeById(p));
 
         return ResResult.ok();
 
@@ -256,7 +255,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
         String subject = claims.getSubject();
         long userId = Long.parseLong(subject);
-        User user = this.getById(userId);
+        User user = userRepository.getById(userId);
         LoginUserInfo loginUserInfo = new LoginUserInfo();
         loginUserInfo.setUserId(userId);
         loginUserInfo.setUserName(user.getUserName());
